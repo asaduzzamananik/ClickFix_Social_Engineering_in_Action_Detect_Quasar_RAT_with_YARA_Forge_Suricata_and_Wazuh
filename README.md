@@ -272,12 +272,75 @@ Watch for:
 ![3 Module loaded by powershell](https://github.com/user-attachments/assets/481e5534-7bc6-4851-8b85-2767c9db0c5b)
 
 
-**Phase 4: Capture C2 using FakeNet-NG**
+**Phase 4: Setup FakeNet-NG on Windows VM to Capture C2 Traffic**
+  
+  1. Download and install FakeNet-NG from GitHub.
+  2. Run Command Prompt as Administrator.
+  - Start → Observe all traffic
+  3. Observe FakeNet logs for:
+    - Outgoing connections (C2 domains/IPs)
+    - HTTP requests & responses
+    - Telegram bot API calls
+
+![powershell exe trying to connect this ip ](https://github.com/user-attachments/assets/5426dbdf-3a2f-4acf-b99e-0dff619d5028)
+
+ ## Phase 5: Detect with YARA Forge
+ 
+**How to download YARA for Windows:**
+
+  - Go to: https://github.com/VirusTotal/yara/releases
+  - Download yara-<version>-windows.zip
+  - Extract the contents
+
+**Use yara64.exe from the extracted folder**
+
+**Step 5.1: Create ClickFix_CMD_Loader.yar**
+```bash
+
+rule quasar_rat
+{
+    meta:
+        description = "Detects ClickFix-style CMD loader for Quasar RAT"
+        author = "Asaduzzaman Chowdhury Anik"
+        date = "2025-06-26"
+
+    strings:
+        $s1 = "curl -L"
+        $s2 = "cmd /c start"
+        $s3 = "%temp%"
+        $s4 = ".bat"
+        $s5 = ".cmd"
+        $s6 = "verification.txt.bat"
+
+    condition:
+        any of ($s*)
+}
+
+```
+**Step 5.2: Scan**
+
+```bash
+yara64.exe Clickfix_CMD_loader.yar 6808
+```
+**NOTE** - 6808 = PID
+
+![Detect Quasar Rat with YARA Forge](https://github.com/user-attachments/assets/c18f5c54-17d8-4abd-9e39-f4f6a5ae6e38)
 
 
+## Conclusion
+This lab simulates a highly realistic phishing attack leveraging social engineering and .cmd scripting to deliver Quasar RAT. It walks through:
+
+  - Phishing setup using Apache on Kali
+  - RAT delivery through Windows Run
+  - Live process and traffic monitoring with open tools
+  - Memory dumping and YARA rule detection
+
+It reflects a real-world adversary TTP (Tactic, Technique, Procedure) and showcases layered defensive capabilities.
 
 
-
-
-
+## Important Safety Notes
+  - Only run malware on isolated VMs with no network bridge to your real network!
+  - Use snapshots to revert VM state if needed.
+  - Do not connect victim VM to internet except via NAT adapter for safety.
+  - Disable shared folders or clipboard sharing between host and guest while testing.
 
