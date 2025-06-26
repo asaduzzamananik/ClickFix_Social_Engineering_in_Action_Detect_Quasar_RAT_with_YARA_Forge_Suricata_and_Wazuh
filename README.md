@@ -251,20 +251,28 @@ The command silently downloads and executes the Quasar .cmd RAT.
 
 ## Phase 3: Behavior Monitoring with System Informer
 
-**Step 3.1: Open System Informer as Admin**
-**Step 3.2: Monitor:**
+  1. Download System Informer.
 
-  - New processes: cmd.exe, powershell.exe
-  - Command line 
-  - Network connections
+  2. Run System Informer as Administrator.
+
+Watch for:
+
+  - New processes or child processes launched by  cmd.exe, powershell.exe,temp.bat
   - Registry changes
-  - Capture screenshots
+  - Network connections
+  - Clipboard access
 
 ![powershell exe running-PID=6808](https://github.com/user-attachments/assets/d21221c5-6c46-4c8d-b4b5-e3188822d390)
 ![execution powershell](https://github.com/user-attachments/assets/50f1632b-8ca5-4f84-a3a6-2eadaa3ef6ba)
 
 ![ratfile](https://github.com/user-attachments/assets/1ca1d18b-85cb-418c-897c-dc83408188a1)
 
+![txt](https://github.com/user-attachments/assets/4c59e8b0-ce9b-4c83-8430-4608d2fa749c)
+
+![3 Module loaded by powershell](https://github.com/user-attachments/assets/481e5534-7bc6-4851-8b85-2767c9db0c5b)
+
+
+**Phase 4: Capture C2 using FakeNet-NG**
 
 
 
