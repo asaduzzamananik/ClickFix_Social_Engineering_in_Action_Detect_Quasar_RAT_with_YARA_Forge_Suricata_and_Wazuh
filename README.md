@@ -27,8 +27,6 @@ Quasar RAT is a .NET-based Remote Access Trojan that supports remote desktop, ke
 
 ## Lab Setup
 Network Settings for All VMs
-  - Adapter 1 – **NAT** (for Internet access)
-  - Go to: VirtualBox → Settings → Network
 
 **Select Adapter 1**:
 
@@ -37,6 +35,7 @@ Network Settings for All VMs
   - Adapter Type: Intel PRO/1000 MT Desktop (default is fine)
   - Cable Connected: Checked
 
+**Select Adapter 2**:
   - Adapter 2 – Host-Only Adapter (for Internal/Lab communication)**
  - Go to: VirtualBox → Settings → Network
 **Select Adapter 2**:
