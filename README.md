@@ -9,9 +9,11 @@ This project simulates a real-world phishing attack that delivers a Quasar Remot
 
 ## Background Theory
 **What is Quasar RAT?**
+
 Quasar RAT is a .NET-based Remote Access Trojan that supports remote desktop, keylogging, system surveillance, and file operations. It is commonly used by threat actors due to its open-source nature and flexibility.
 
 **What is ClickFix?**
+
 "ClickFix" is a deceptive malware delivery method where victims are lured to fake Cloudflare CAPTCHA verification pages. These pages convince the user to run a command in the Windows Run dialog, which triggers the download and execution of malware.
 
 
@@ -23,11 +25,28 @@ Quasar RAT is a .NET-based Remote Access Trojan that supports remote desktop, ke
 | **Network**   | NAT + HOST ONLY ADAPTER (same subnet for both VMs) | **Network** |   
 
 
-## Network Configuration
-All VMs:
+## Lab Setup
+Network Settings for All VMs
+  - Adapter 1 – **NAT** (for Internet access)
+  - Go to: VirtualBox → Settings → Network
 
-  - Adapter 1: NAT (internet access)
-  - Adapter 2: Host-only Adapter 
+**Select Adapter 1**:
+
+  - Check Enable Network Adapter
+  - Attached to: NAT
+  - Adapter Type: Intel PRO/1000 MT Desktop (default is fine)
+  - Cable Connected: Checked
+
+  - Adapter 2 – Host-Only Adapter (for Internal/Lab communication)**
+ - Go to: VirtualBox → Settings → Network
+**Select Adapter 2**:
+  - Check Enable Network Adapter
+  - Attached to: Host-only Adapter
+  - Name: e.g., vboxnet0 (default VirtualBox host-only network)
+  - Adapter Type: Intel PRO/1000 MT Desktop
+  - Cable Connected:  Checked
+
+Repeat the same for **Windows VM**.
 
 ## kali Network Config
 ![kali 1](https://github.com/user-attachments/assets/9af84ee0-20a4-43cd-80aa-cff6f17e8e5e)
