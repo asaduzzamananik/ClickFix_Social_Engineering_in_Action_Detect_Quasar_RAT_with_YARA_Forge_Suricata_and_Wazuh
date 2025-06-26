@@ -4,7 +4,7 @@ Simulated a real-world phishing attack using a fake Cloudflare CAPTCHA page to d
 ---
 ## Objective
   - Simulate a real-world phishing attack delivering QuasarRAT
-  - Use the "ClickFix" social engineering technique to lure users
+  - Use the "ClickFix" social engineering technique to trick users into executing the disguised malware
   - Deliver a disguised .cmd-based malware payload posing as a Cloudflare CAPTCHA
   - Emphasize behavior monitoring and network analysis
      
@@ -224,8 +224,9 @@ Paste the following HTML code inside index.html:
 </html>
 ```
  - Save and exit the editor: Press Ctrl+O then Enter to save, then Ctrl+X to exit.
+![7c4a9590-09d9-41b6-bd2a-4b71ed8ec49c](https://github.com/user-attachments/assets/26c1077b-dc20-4b94-b46b-78ad3ff1c178)
 
-![7c4a9590-09d9-41b6-bd2a-4b71ed8ec49c](https://github.com/user-attachments/assets/2b4c4b63-6b6c-4568-ac15-c422af78f336)
+
 
 **4. Place the Payload Executable**
 You need the fake RAT payload renamed as ClickFix.exe
