@@ -281,7 +281,7 @@ Watch for:
 ![3 Module loaded by powershell](https://github.com/user-attachments/assets/481e5534-7bc6-4851-8b85-2767c9db0c5b)
 
 
-**Phase 4: Setup FakeNet-NG on Windows VM to Capture C2 Traffic**
+## Phase 4: Setup FakeNet-NG on Windows VM to Capture C2 Traffic
   
   1. Download and install FakeNet-NG from GitHub.
   2. Run Command Prompt as Administrator.
