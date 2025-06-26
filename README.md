@@ -3,8 +3,15 @@ Simulated a real-world phishing attack using a fake Cloudflare CAPTCHA page to d
 
 ---
 ## Objective
-This project simulates a real-world phishing attack that delivers a Quasar Remote Access Trojan (RAT) using the "ClickFix" social engineering technique. It involves tricking users into executing a .cmd-based malware payload disguised as a Cloudflare CAPTCHA page. The project emphasizes behavior monitoring and detection using open-source tools such as System Informer, FakeNet-NG, YARA Forge.
-
+  - Simulate a real-world phishing attack delivering QuasarRAT
+  - Use the "ClickFix" social engineering technique to lure users
+  - Deliver a disguised .cmd-based malware payload posing as a Cloudflare CAPTCHA
+  - Emphasize behavior monitoring and network analysis
+     
+Utilize open-source tools:
+  - System Informer for process behavior analysis
+  - FakeNet-NG for fake network simulation and traffic capture
+  - YARA Forge for malware family identification
 ---
 
 ## Background Theory
@@ -38,6 +45,7 @@ Network Settings for All VMs
 **Select Adapter 2**:
   - Adapter 2 – Host-Only Adapter (for Internal/Lab communication)**
  - Go to: VirtualBox → Settings → Network
+
 **Select Adapter 2**:
   - Check Enable Network Adapter
   - Attached to: Host-only Adapter
