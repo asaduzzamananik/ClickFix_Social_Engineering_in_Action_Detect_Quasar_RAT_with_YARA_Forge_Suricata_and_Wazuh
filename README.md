@@ -17,14 +17,13 @@ Quasar RAT is a .NET-based Remote Access Trojan that supports remote desktop, ke
 
 ## Virtual Machines (VirtualBox)
 | **VM NAME**  | **OS** | **Purpose** |
-|---------------|-------------|---------------|-------------|
-| **Attacker**  |  | **Kali Linux**  | Host phishing server |
-| **Victim**    | | **Windows 10**   | Victim + analysis |
-| **Network**   | Bridged Mode (same subnet for both VMs) | **Network**   |Allows both VMs to share network with host |
-| **IDS**   | Suricata | **On Ubuntu**   | Detects C2 traffic from payload |
+|---------------|-------------|---------------|
+| **Attacker**    | **Kali Linux**  | Host phishing server |
+| **Victim**     | **Windows 10**   | Victim + analysis |
+| **Network**   | NAT + HOST ONLY ADAPTER (same subnet for both VMs) | **Network** |   
+
 
 ## Network Configuration
-
 All VMs:
 
   - Adapter 1: NAT (internet access)
