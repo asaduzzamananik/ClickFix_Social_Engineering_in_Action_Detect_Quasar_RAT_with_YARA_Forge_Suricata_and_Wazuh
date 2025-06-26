@@ -217,6 +217,8 @@ Paste the following HTML code inside index.html:
 ```
  - Save and exit the editor: Press Ctrl+O then Enter to save, then Ctrl+X to exit.
 
+![7c4a9590-09d9-41b6-bd2a-4b71ed8ec49c](https://github.com/user-attachments/assets/2b4c4b63-6b6c-4568-ac15-c422af78f336)
+
 **4. Place the Payload Executable**
 You need the fake RAT payload renamed as ClickFix.exe
   - I already have the Quasar RAT as Quasar, move or copy it to /var/www/html/clickfix/:
@@ -245,4 +247,29 @@ ip a
 The command silently downloads and executes the Quasar .cmd RAT.
 
 ![run in run](https://github.com/user-attachments/assets/bc8bf52f-ad6d-4988-8fa6-3c47b68c9ca2)
+
+
+## Phase 3: Behavior Monitoring with System Informer
+
+**Step 3.1: Open System Informer as Admin**
+**Step 3.2: Monitor:**
+
+  - New processes: cmd.exe, powershell.exe
+  - Command line 
+  - Network connections
+  - Registry changes
+  - Capture screenshots
+
+![powershell exe running-PID=6808](https://github.com/user-attachments/assets/d21221c5-6c46-4c8d-b4b5-e3188822d390)
+![execution powershell](https://github.com/user-attachments/assets/50f1632b-8ca5-4f84-a3a6-2eadaa3ef6ba)
+
+![ratfile](https://github.com/user-attachments/assets/1ca1d18b-85cb-418c-897c-dc83408188a1)
+
+
+
+
+
+
+
+
 
