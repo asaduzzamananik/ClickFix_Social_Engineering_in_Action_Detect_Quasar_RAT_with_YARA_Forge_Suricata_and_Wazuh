@@ -304,9 +304,9 @@ Watch for:
 
 **Use yara64.exe from the extracted folder**
 
-**Step 5.1: Create ClickFix_CMD_Loader.yar**
-```bash
+**Step 5.1: Create ClickFix_CMD_Loader.yar for custom YARA Rules**
 
+```bash
 rule quasar_rat
 {
     meta:
@@ -332,7 +332,7 @@ rule quasar_rat
 ```bash
 yara64.exe Clickfix_CMD_loader.yar 6808
 ```
-**NOTE** - 6808 = PID
+**NOTE** => [6808 = PID]
 
 ![Detect Quasar Rat with YARA Forge](https://github.com/user-attachments/assets/c18f5c54-17d8-4abd-9e39-f4f6a5ae6e38)
 
