@@ -1,4 +1,4 @@
-# ClickFix Social Engineering in Action Detect Quasar RAT with YARA Forge
+# ClickFix Social Engineering in Action | Detect Quasar RAT with YARA Forge
 Simulated a real-world phishing attack using a fake Cloudflare CAPTCHA page to deliver a .cmd-based Quasar RAT. Includes behavior monitoring (System Informer), C2 traffic capture (FakeNet-NG), and detection using custom YARA rules
 
 ---
