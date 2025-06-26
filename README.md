@@ -278,9 +278,10 @@ Watch for:
   2. Run Command Prompt as Administrator.
   - Start → Observe all traffic
   3. Observe FakeNet logs for:
-    - Outgoing connections (C2 domains/IPs)
-    - HTTP requests & responses
-    - Telegram bot API calls
+
+  - Outgoing connections (C2 domains/IPs)
+  - HTTP requests & responses
+  - Telegram bot API calls
 
 ![powershell exe trying to connect this ip ](https://github.com/user-attachments/assets/5426dbdf-3a2f-4acf-b99e-0dff619d5028)
 
