@@ -459,9 +459,12 @@ systemctl restart wazuh-manager
 
 ## Visualize Sysmon Logs in Wazuh
 
+![v1](https://github.com/user-attachments/assets/0a9815c2-e6a2-44e9-b663-86ef9484b9c4)
 
+![Wazuh Triggers Malware](https://github.com/user-attachments/assets/90a37f75-387b-414e-ae05-4e63de5d0d24)
+![Detect Malware From Windows Sysmon Log](https://github.com/user-attachments/assets/f298a01a-3c33-4b00-bfe8-f40dad98e0b4)
 
-
+![execution](https://github.com/user-attachments/assets/74291e2c-db00-4308-b51b-bf9d1aabc18a)
 
 ## Conclusion
 This lab simulates a highly realistic phishing attack leveraging social engineering and .cmd scripting to deliver Quasar RAT. It walks through:
