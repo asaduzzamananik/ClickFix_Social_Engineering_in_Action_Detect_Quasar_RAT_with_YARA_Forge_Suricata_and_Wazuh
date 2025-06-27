@@ -26,15 +26,6 @@ Quasar RAT is a .NET-based Remote Access Trojan that supports remote desktop, ke
 "ClickFix" is a deceptive malware delivery method where victims are lured to fake Cloudflare CAPTCHA verification pages. These pages convince the user to run a command in the Windows Run dialog, which triggers the download and execution of malware.
 
 
-## Virtual Machines (VirtualBox)
-| **VM NAME**  | **Network Adapter** | **Purpose** | **Tools Used** |
-|---------------|-------------|---------------|---------------|
-| **Kali Linux**    | **Adapter 1: NAT**  | Internet access (for updates, apt, curl)  | Apache2, payload files, phishing page |
-|                   | **Adapter 2: Host-Only**  | Private LAN with victim (Windows)  | Hosts phishing page via Apache |
-| **Windows 10**    | **Adapter 1: NAT**   | Internet (optional, to simulate a real user) | For browser use and tool installation |
-|                   | **Adapter 2: Host-Only** | Access phishing server (Kali VM) | FakeNet-NG, System Informer, YARA |   
-
-
 ## Lab Setup
 Network Settings for All VMs
 
@@ -65,6 +56,22 @@ Repeat the same for **Windows VM**.
 ## Windows 10 Network Config
 ![win 1](https://github.com/user-attachments/assets/f9596035-b02e-4e1d-8ab7-a5e244cc00b1)
 ![win 2](https://github.com/user-attachments/assets/7b4ee105-c5f3-4772-b54f-5f05e9905dd2)
+
+**Why this dual adapter setup?**
+
+  - **NAT Adapter** provides internet connectivity (for tool installation, script testing, optional external C2 emulation).
+  - **Host-Only Adapter** allows isolated communication between Kali (attacker server) and Windows (victim), simulating a LAN-based or phishing-based attack **without exposing the VM to your real network.**
+
+
+## Virtual Machines (VirtualBox)
+| **VM NAME**  | **Network Adapter** | **Purpose** | **Tools Used** |
+|---------------|-------------|---------------|---------------|
+| **Kali Linux**    | **Adapter 1: NAT**  | Internet access (for updates, apt, curl)  | Apache2, payload files, phishing page |
+|                   | **Adapter 2: Host-Only**  | Private LAN with victim (Windows)  | Hosts phishing page via Apache |
+| **Windows 10**    | **Adapter 1: NAT**   | Internet (optional, to simulate a real user) | For browser use and tool installation |
+|                   | **Adapter 2: Host-Only** | Access phishing server (Kali VM) | FakeNet-NG, System Informer, YARA |   
+
+
 
 ## Tool Installation
 
