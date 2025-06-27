@@ -422,11 +422,27 @@ Edit /var/ossec/etc/shared/default:
   -Press Ctrl + O to save.
   -Press Enter to confirm.
   -Press Ctrl + X to exit.
-  
-4.Restart Wazuh Manager:
+
+4.check for configuration errors:
+```bash
+/var/ossec/bin/verify-agent-conf
+```
+**Note** :Each time you make a change to the agent.conf file, it is important to check for configuration errors. If any errors are reported by this check, they must be fixed before the next step
+
+![check conf](https://github.com/user-attachments/assets/1253cf17-bce4-442b-9156-bca551377f3f)
+
+5.Restart Wazuh Manager:
 ```bash
 systemctl restart wazuh-manager
 ```
+
+6.Confirm that the agent received the configuration:
+```bash
+/var/ossec/bin/agent_groups -S -i 001
+```
+![check conf](https://github.com/user-attachments/assets/2f9934b8-727c-4ba4-9e8b-ddb3362add28)
+
+**001** => **Wazuh Agent Id**
 
 **Monitoring the Windows event channel with Wazuh**
 
@@ -440,6 +456,8 @@ systemctl restart wazuh-manager
 ```
 ![winsis](https://github.com/user-attachments/assets/80e31c30-ebaa-4ca6-8253-2e23223e2ea3)
 
+
+## Visualize Sysmon Logs in Wazuh
 
 
 
