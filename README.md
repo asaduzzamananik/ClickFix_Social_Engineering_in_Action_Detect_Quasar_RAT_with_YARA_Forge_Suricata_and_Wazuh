@@ -92,7 +92,7 @@ sudo apt install apache2 curl unzip -y
   - Source: MalwareBazaar 
   - File Format: .cmd loader script (ClickFix-style)
 
-## Phase 1: Setup Fake Cloudflare CAPTCHA Page
+## Phase 1: Setup Fake Cloudflare CAPTCHA Page (In Kali Machine)
 
 **1.Start and Enable Apache service:**
 ```bash
@@ -255,8 +255,10 @@ Run on Kali:
 ```bash
 ip a
 ```
-  - Look for your Host-only adapter (usually eth1 or enp0s8), find the IPv4 address, something like 192.168.56.X.
-## Phase 2: Phishing Execution
+  - Look for your Host-only adapter (usually eth1 or enp0s8), find the IPv4 address, something like 192.168.56.X..
+
+
+## Phase 2: Phishing Execution (In Windows Machine)
 
 **Step 2.1: On Windows Victim**
   - Open browser → http://192.168.56.109/clickfix/
