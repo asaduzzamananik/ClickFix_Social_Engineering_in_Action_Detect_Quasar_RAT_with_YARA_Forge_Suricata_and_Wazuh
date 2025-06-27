@@ -26,6 +26,7 @@ This project replicates the full infection chain from initial phishing to behavi
   - Execute the payload silently on the Windows 10 victim machine.
   - Monitor malware behavior using tools like System Informer, FakeNet-NG, and PE-sieve on the victim system.
   - Create and test a custom YARA rule to statically detect the malicious script or in-memory payload.
+  - **Wazuh Agent + Sysmon** (for host-based telemetry & behavioral alerts)
 
 
 ## Background Theory
@@ -60,6 +61,7 @@ Network Settings for All VMs
   - Cable Connected:  Checked
 
 Repeat the same for **Windows VM**.
+Repeat the same for **Ubuntu VM**.
 
 ## kali Network Config
 ![kali 1](https://github.com/user-attachments/assets/9af84ee0-20a4-43cd-80aa-cff6f17e8e5e)
@@ -68,6 +70,11 @@ Repeat the same for **Windows VM**.
 ## Windows 10 Network Config
 ![win 1](https://github.com/user-attachments/assets/f9596035-b02e-4e1d-8ab7-a5e244cc00b1)
 ![win 2](https://github.com/user-attachments/assets/7b4ee105-c5f3-4772-b54f-5f05e9905dd2)
+
+## UbuntuNetwork Config
+![ub1](https://github.com/user-attachments/assets/c35a0213-e96a-46e0-a037-7cd344445929)
+![ub2](https://github.com/user-attachments/assets/5426d6de-334f-498f-be89-63ac7a1d9742)
+
 
 **Why this dual adapter setup?**
 
@@ -81,7 +88,9 @@ Repeat the same for **Windows VM**.
 | **Kali Linux**    | **Adapter 1: NAT**  | Internet access (for updates, apt, curl)  | Apache2, payload files, phishing page |
 |                   | **Adapter 2: Host-Only**  | Private LAN with victim (Windows)  | Hosts phishing page via Apache |
 | **Windows 10**    | **Adapter 1: NAT**   | Internet (optional, to simulate a real user) | For browser use and tool installation |
-|                   | **Adapter 2: Host-Only** | Access phishing server (Kali VM) | FakeNet-NG, System Informer, YARA |   
+|                   | **Adapter 2: Host-Only** | Access phishing server (Kali VM) | FakeNet-NG, System Informer, YARA, Wazuh Agent | 
+| **Ubuntu**        | **Adapter 1: NAT**   | Internet  | For browser use and tool installation |
+|                   | **Adapter 2: Host-Only** | Monitoring  |  Wazuh Manager, Suricata   | 
 
 
 
