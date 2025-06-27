@@ -28,6 +28,7 @@ This project replicates the full infection chain from initial phishing to behavi
   - Create and test a custom YARA rule to statically detect the malicious script or in-memory payload.
   - **Wazuh Agent + Sysmon** (for host-based telemetry & behavioral alerts)
 
+---
 
 ## Background Theory
 **What is Quasar RAT?**
@@ -38,6 +39,7 @@ Quasar RAT is a .NET-based Remote Access Trojan that supports remote desktop, ke
 
 "ClickFix" is a deceptive malware delivery method where victims are lured to fake Cloudflare CAPTCHA verification pages. These pages convince the user to run a command in the Windows Run dialog, which triggers the download and execution of malware.
 
+---
 
 ## Lab Setup
 Network Settings for All VMs
@@ -81,7 +83,7 @@ Repeat the same for **Ubuntu VM**.
   - **NAT Adapter** provides internet connectivity (for tool installation, script testing, optional external C2 emulation).
   - **Host-Only Adapter** allows isolated communication between Kali (attacker server) and Windows (victim), simulating a LAN-based or phishing-based attack **without exposing the VM to your real network.**
 
-
+---
 ## Virtual Machines (VirtualBox)
 | **VM NAME**  | **Network Adapter** | **Purpose** | **Tools Used** |
 |---------------|-------------|---------------|---------------|
@@ -93,7 +95,7 @@ Repeat the same for **Ubuntu VM**.
 |                   | **Adapter 2: Host-Only** | Monitoring  |  Wazuh Manager, Suricata   | 
 
 
-
+---
 ## Tool Installation
 
 **Kali Linux:**
@@ -114,6 +116,7 @@ sudo apt install apache2 curl unzip -y
   - Source: MalwareBazaar 
   - File Format: .cmd loader script (ClickFix-style)
 
+---
 ## Phase 1: Setup Fake Cloudflare CAPTCHA Page (In Kali Machine)
 
 **1.Start and Enable Apache service:**
@@ -279,6 +282,7 @@ ip a
 ```
   - Look for your Host-only adapter (usually eth1 or enp0s8), find the IPv4 address, something like 192.168.56.X..
 
+---
 
 ## Phase 2: Phishing Execution (In Windows Machine)
 
@@ -291,6 +295,8 @@ The command silently downloads and executes the Quasar .cmd RAT.
 
 ![run in run](https://github.com/user-attachments/assets/bc8bf52f-ad6d-4988-8fa6-3c47b68c9ca2)
 
+
+---
 
 ## Phase 3: Behavior Monitoring with System Informer
 
@@ -314,7 +320,7 @@ Watch for:
 
 ![3 Module loaded by powershell](https://github.com/user-attachments/assets/481e5534-7bc6-4851-8b85-2767c9db0c5b)
 
-
+---
 ## Phase 4: Setup FakeNet-NG on Windows VM to Capture C2 Traffic
   
   1. Download and install FakeNet-NG from GitHub.
@@ -327,6 +333,8 @@ Watch for:
   - Telegram bot API calls
 
 ![powershell exe trying to connect this ip ](https://github.com/user-attachments/assets/5426dbdf-3a2f-4acf-b99e-0dff619d5028)
+
+---
 
  ## Phase 5: Detect with YARA Forge
  
@@ -371,7 +379,7 @@ yara64.exe Clickfix_CMD_loader.yar 6808
 ![Detect Quasar Rat with YARA Forge](https://github.com/user-attachments/assets/c18f5c54-17d8-4abd-9e39-f4f6a5ae6e38)
 
 
-## Phase 7: Wazuh Host Monitoring
+## Phase 6: Wazuh Host Monitoring
 
 **Goal: Detect suspicious host behavior from the victim's machine.**
 Steps:
@@ -382,6 +390,7 @@ Steps:
 
   ![wazuh agent setup](https://github.com/user-attachments/assets/dd64a4ec-ad82-43d6-a327-7875704294f5)
 
+---
 
  ## Phase 7: Sysmon Installation
  
@@ -460,7 +469,7 @@ systemctl restart wazuh-manager
 ```bash
 Restart-Service -Name wazuh
 ```
-
+---
 
 ## Visualize Sysmon Logs in Wazuh
 
@@ -470,6 +479,8 @@ Restart-Service -Name wazuh
 ![Detect Malware From Windows Sysmon Log](https://github.com/user-attachments/assets/f298a01a-3c33-4b00-bfe8-f40dad98e0b4)
 
 ![execution](https://github.com/user-attachments/assets/74291e2c-db00-4308-b51b-bf9d1aabc18a)
+
+---
 
 ## Conclusion
 This lab simulates a highly realistic phishing attack leveraging social engineering and .cmd scripting to deliver Quasar RAT. It walks through:
