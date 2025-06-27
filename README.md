@@ -444,7 +444,7 @@ systemctl restart wazuh-manager
 
 **001** => **Wazuh Agent Id**
 
-**Monitoring the Windows event channel with Wazuh**
+****On Windows(Wazuh Agent)****
 
 1.Add the following configuration in between the <ossec_config> tags of the Wazuh agent 'C:\Program Files (x86)\ossec-agent\ossec.conf' file:
 
@@ -455,6 +455,11 @@ systemctl restart wazuh-manager
 </localfile>
 ```
 ![winsis](https://github.com/user-attachments/assets/80e31c30-ebaa-4ca6-8253-2e23223e2ea3)
+
+2.Restart the Wazuh agent via PowerShell with administrator privileges to apply the configuration change:
+```bash
+Restart-Service -Name wazuh
+```
 
 
 ## Visualize Sysmon Logs in Wazuh
