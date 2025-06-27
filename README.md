@@ -71,7 +71,7 @@ Repeat the same for **Ubuntu VM**.
 ![win 1](https://github.com/user-attachments/assets/f9596035-b02e-4e1d-8ab7-a5e244cc00b1)
 ![win 2](https://github.com/user-attachments/assets/7b4ee105-c5f3-4772-b54f-5f05e9905dd2)
 
-## UbuntuNetwork Config
+## Ubuntu Network Config
 ![ub1](https://github.com/user-attachments/assets/c35a0213-e96a-46e0-a037-7cd344445929)
 ![ub2](https://github.com/user-attachments/assets/5426d6de-334f-498f-be89-63ac7a1d9742)
 
@@ -88,7 +88,7 @@ Repeat the same for **Ubuntu VM**.
 | **Kali Linux**    | **Adapter 1: NAT**  | Internet access (for updates, apt, curl)  | Apache2, payload files, phishing page |
 |                   | **Adapter 2: Host-Only**  | Private LAN with victim (Windows)  | Hosts phishing page via Apache |
 | **Windows 10**    | **Adapter 1: NAT**   | Internet (optional, to simulate a real user) | For browser use and tool installation |
-|                   | **Adapter 2: Host-Only** | Access phishing server (Kali VM) | FakeNet-NG, System Informer, YARA, Wazuh Agent | 
+|                   | **Adapter 2: Host-Only** | Access phishing server (Kali VM) | FakeNet-NG, System Informer, YARA,Sysmon, Wazuh Agent | 
 | **Ubuntu**        | **Adapter 1: NAT**   | Internet  | For browser use and tool installation |
 |                   | **Adapter 2: Host-Only** | Monitoring  |  Wazuh Manager, Suricata   | 
 
@@ -107,6 +107,7 @@ sudo apt install apache2 curl unzip -y
   - FakeNet-NG
   - YARA (for Windows)
   - YARA Forge
+  - Sysmon
 
  ## Quasar RAT Sample
    - Malware Hash: bfcdaed93c4c3605be7e800daac4299c4aa0df0218798cb64c2e2f01027989b2
@@ -368,6 +369,80 @@ yara64.exe Clickfix_CMD_loader.yar 6808
 **NOTE** => [6808 = PID]
 
 ![Detect Quasar Rat with YARA Forge](https://github.com/user-attachments/assets/c18f5c54-17d8-4abd-9e39-f4f6a5ae6e38)
+
+
+## Phase 7: Wazuh Host Monitoring
+
+**Goal: Detect suspicious host behavior from the victim's machine.**
+Steps:
+- Install Wazuh Agent on Windows 10.
+- Set the manager IP to Ubuntu host.
+- Start Wazuh agent service.
+- View alerts in Wazuh dashboard or log files.
+
+  ![wazuh agent setup](https://github.com/user-attachments/assets/dd64a4ec-ad82-43d6-a327-7875704294f5)
+
+
+ ## Phase 7: Sysmon Installation
+ 
+**Install Sysmon on the Windows Machine**
+**Step 1: Download Sysmon**
+
+Visit: https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon
+Download Sysmon64.zip, extract to C:\Sysmon.
+
+**Step 2: Download Config File**
+Ensure the XML config is a valid one such as from https://github.com/SwiftOnSecurity/sysmon-config
+
+**Step 3: Install Sysmon**
+```bash
+cd C:\Sysmon
+.\sysmon.exe -accepteula -i sysmonconfig.xml
+```
+**You should now see logs appearing in Event Viewer → Applications and Services Logs → Microsoft → Windows → Sysmon → Operational.**
+
+**On Ubuntu (Wazuh Manager)**
+1: Enable Sysmon Log Collection in **ossec.conf** (on manager)
+Edit /var/ossec/etc/shared/default:
+
+```bash
+ nano /var/ossec/etc/shared/default
+```
+2.Add the Following Configaration:
+
+```bash
+<localfile>
+  <location>Microsoft-Windows-Sysmon/Operational</location>
+  <log_format>eventchannel</log_format>
+</localfile>
+```
+![windows agent config](https://github.com/user-attachments/assets/245e555c-57ab-4dbd-b193-e651c71aa4a0)
+
+3.Save and Exit:
+  -Press Ctrl + O to save.
+  -Press Enter to confirm.
+  -Press Ctrl + X to exit.
+  
+4.Restart Wazuh Manager:
+```bash
+systemctl restart wazuh-manager
+```
+
+**Monitoring the Windows event channel with Wazuh**
+
+1.Add the following configuration in between the <ossec_config> tags of the Wazuh agent 'C:\Program Files (x86)\ossec-agent\ossec.conf' file:
+
+```bash
+<localfile>
+  <location>Microsoft-Windows-Sysmon/Operational</location>
+  <log_format>eventchannel</log_format>
+</localfile>
+```
+![winsis](https://github.com/user-attachments/assets/80e31c30-ebaa-4ca6-8253-2e23223e2ea3)
+
+
+
+
 
 
 ## Conclusion
