@@ -364,3 +364,27 @@ It reflects a real-world adversary TTP (Tactic, Technique, Procedure) and showca
   - Do not connect victim VM to internet except via NAT adapter for safety.
   - Disable shared folders or clipboard sharing between host and guest while testing.
 
+---
+
+## Credits & Original POC Reference
+
+This project was inspired by a proof-of-concept video by **Ayush Ahmed**:
+
+🎥 **Video Title:**  
+[ClickFix Social Engineering in Action - Quasar RAT Detection with YARA Forge](https://www.youtube.com/watch?v=yll8-yqVv0w)
+
+ **Malware Sample Hash:**  
+`bfcdaed93c4c3605be7e800daac4299c4aa0df0218798cb64c2e2f01027989b2`  
+Available on: [MalwareBazaar](https://bazaar.abuse.ch/sample/bfcdaed93c4c3605be7e800daac4299c4aa0df0218798cb64c2e2f01027989b2/)
+
+> ⚠️ This project is for educational and cybersecurity research purposes only. No part of this work is intended for malicious use or unauthorized access.
+Would you like me to insert this directly into your full write-up or GitHub-style README.md version?
+
+
+
+
+
+
+
+
+
