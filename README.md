@@ -1,18 +1,20 @@
 # ClickFix Social Engineering in Action | Detect Quasar RAT with YARA Forge
-Simulated a real-world phishing attack using a fake Cloudflare CAPTCHA page to deliver a .cmd-based Quasar RAT. Includes behavior monitoring (System Informer), C2 traffic capture (FakeNet-NG), and detection using custom YARA rules
+This project replicates a real-world malware delivery technique known as ClickFix, where a fake Cloudflare CAPTCHA page tricks users into running a malicious command via Windows Run (Win + R). The payload is a .cmd loader that downloads and executes a Quasar RAT.
 
 ---
 ## Objective
-  - Simulate a real-world phishing attack delivering QuasarRAT
-  - Use the "ClickFix" social engineering technique to trick users into executing the disguised malware
-  - Deliver a disguised .cmd-based malware payload posing as a Cloudflare CAPTCHA
-  - Emphasize behavior monitoring and network analysis
-     
-Utilize open-source tools:
-  - System Informer for process behavior analysis
-  - FakeNet-NG for fake network simulation and traffic capture
-  - YARA Forge for malware family identification
----
+The goal of this simulation is to demonstrate how attackers can abuse social engineering and scripting to deliver a Remote Access Trojan (Quasar RAT) using a fake Cloudflare CAPTCHA page — known as the ClickFix technique.
+
+This project replicates the full infection chain from initial phishing to behavior monitoring and malware detection in a virtual lab setup.
+
+**key Goals:**
+
+  - Simulate a phishing attack using a Cloudflare CAPTCHA-themed page hosted on a Kali Linux server.
+  - Trick the victim into pasting a malicious Windows Run command that downloads a .cmd-based Quasar RAT payload.
+  - Execute the payload silently on the Windows 10 victim machine.
+  - Monitor malware behavior using tools like System Informer, FakeNet-NG, and PE-sieve on the victim system.
+  - Create and test a custom YARA rule to statically detect the malicious script or in-memory payload.
+
 
 ## Background Theory
 **What is Quasar RAT?**
@@ -25,11 +27,12 @@ Quasar RAT is a .NET-based Remote Access Trojan that supports remote desktop, ke
 
 
 ## Virtual Machines (VirtualBox)
-| **VM NAME**  | **OS** | **Purpose** |
-|---------------|-------------|---------------|
-| **Attacker**    | **Kali Linux**  | Host phishing server |
-| **Victim**     | **Windows 10**   | Victim + analysis |
-| **Network**   | NAT + HOST ONLY ADAPTER (same subnet for both VMs) | **Network** |   
+| **VM NAME**  | **Network Adapter** | **Purpose** | **Tools Used** |
+|---------------|-------------|---------------|---------------|
+| **Kali Linux**    | **Adapter 1: NAT**  | Internet access (for updates, apt, curl)  | Apache2, payload files, phishing page |
+|                   | **Adapter 2: Host-Only**  | Private LAN with victim (Windows)  | Hosts phishing page via Apache |
+| **Windows 10**    | **Adapter 1: NAT**   | Internet (optional, to simulate a real user) | For browser use and tool installation |
+|                   | **Adapter 2: Host-Only** | Access phishing server (Kali VM) | FakeNet-NG, System Informer, YARA |   
 
 
 ## Lab Setup
