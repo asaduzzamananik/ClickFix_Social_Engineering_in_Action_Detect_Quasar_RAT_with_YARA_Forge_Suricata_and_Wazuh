@@ -482,6 +482,43 @@ Restart-Service -Name wazuh
 
 ---
 
+## Phase 7: Suricata Alert Genaration 
+
+### Step 1: Install Suricata on Windows
+
+**Prerequisite: Install Npcap in windows**
+  - Download Npcap v1.82 from: https://npcap.com/#download
+  - During install:
+      - Check **"WinPcap API-compatible Mode"**
+
+ 1. Download Suricata for Windows: https://suricata.io/download/
+ 2. Complete setup and select your correct network interface
+ 3. Test configuration:
+    ```bash
+    cd "C:\Program Files\Suricata" suricata.exe -T -c .\suricata.yaml -v
+    ```
+### Step 2: Enable Logging in suricata.yaml (Windows)
+  1.Open the suricata.yaml File
+    **Navigate to:**    
+    ```bash
+    C:\Program Files\Suricata\
+    ```
+    
+  2.Right-click suricata.yaml → Open with Notepad++ or Visual Studio Code (recommended for YAML indentation).
+
+  3.Enable eve.json Logging
+  Search for:
+  
+     ```bash
+    - eve-log:
+    ```
+
+
+
+
+
+
+
 ## Conclusion
 This lab simulates a highly realistic phishing attack leveraging social engineering and .cmd scripting to deliver Quasar RAT. It walks through:
 
