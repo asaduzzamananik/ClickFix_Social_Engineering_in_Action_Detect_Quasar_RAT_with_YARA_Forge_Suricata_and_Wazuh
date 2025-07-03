@@ -21,13 +21,17 @@ This project replicates the full infection chain from initial phishing to behavi
 
 **key Goals:**
 
-  - Simulate a phishing attack using a Cloudflare CAPTCHA-themed page hosted on a Kali Linux server.
-  - Trick the victim into pasting a malicious Windows Run command that downloads a .cmd-based Quasar RAT payload.
-  - Execute the payload silently on the Windows 10 victim machine.
-  - Monitor malware behavior using tools like System Informer, FakeNet-NG, and PE-sieve on the victim system.
-  - Create and test a custom YARA rule to statically detect the malicious script or in-memory payload.
-  - **Wazuh Agent + Sysmon** (for host-based telemetry & behavioral alerts)
+  - Demonstrate the full kill chain: from phishing delivery to post-exploitation activity using a simulated fake CAPTCHA.
+  - Deliver and execute Quasar RAT through a deceptive command copied via the fake web page.
+  - Monitor malware behavior using tools like System Informer, FakeNet-NG.
 
+Detect Quasar RAT through:
+  - **Custom YARA** rules (via YARA Forge).
+  - **Suricata IDS** custom rule set.
+  - **Wazuh + Sysmon** for endpoint detection and behavioral analytics.
+
+  - **Forward Suricata logs** from Windows to a Logstash-enabled SIEM using Filebeat, enabling real-time alerting and dashboard integration.
+  
 ---
 
 ## Background Theory
@@ -677,8 +681,10 @@ rule-files:
   "C:\Program Files\Suricata\suricata.exe" -c "C:\Program Files\Suricata\suricata.yaml" -i 1
   ```
 
+
 **Now that Windows running Suricata with my custom clickfix.rules  the next step is to forward the logs (especially eve.json) from Windows to  Ubuntu SIEM (e.g., Wazuh or ELK). **
 
+---
 ## Install Filebeat on Windows (Forwarder)
 
 ### Step 1:
@@ -732,6 +738,7 @@ Or:
 ```bash
 .\filebeat.exe -e -c filebeat.yml
 ```
+---
 
 ## Logstash Installation and Configuration on Ubuntu (For Suricata + Filebeat)
 ### Step 1: Install Java (required for Logstash)
@@ -828,6 +835,8 @@ Now When RAT execute,Then Suricata triggers the alert.
 ![Trying to connect this ip](https://github.com/user-attachments/assets/43c9e523-aa68-4b68-999e-b9971ea8c5c1)
 
 
+---
+
 ## Conclusion
 This lab simulates a highly realistic phishing attack leveraging social engineering and .cmd scripting to deliver Quasar RAT. It walks through:
 
@@ -837,7 +846,7 @@ This lab simulates a highly realistic phishing attack leveraging social engineer
   - Memory dumping and YARA rule detection
 
 It reflects a real-world adversary TTP (Tactic, Technique, Procedure) and showcases layered defensive capabilities.
-
+---
 
 ## Important Safety Notes
   - Only run malware on isolated VMs with no network bridge to your real network!
