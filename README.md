@@ -846,6 +846,7 @@ This lab simulates a highly realistic phishing attack leveraging social engineer
   - Memory dumping and YARA rule detection
 
 It reflects a real-world adversary TTP (Tactic, Technique, Procedure) and showcases layered defensive capabilities.
+
 ---
 
 ## Important Safety Notes
