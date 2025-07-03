@@ -498,9 +498,11 @@ Restart-Service -Name wazuh
  1. Download Suricata for Windows: https://suricata.io/download/
  2. Complete setup and select your correct network interface
  3. Test configuration:
+    
     ```bash
     cd "C:\Program Files\Suricata" suricata.exe -T -c .\suricata.yaml -v
     ```
+    
 ### Step 2: Enable Logging in suricata.yaml (Windows)
   1.Open the suricata.yaml File
     **Navigate to:**    
@@ -532,10 +534,12 @@ outputs:
         - tls
         - flow
 ```
+
 **You can also add fileinfo, smtp, ssh, etc. if needed.**
 
 4.Enable **fast.log** Logging
 Below outputs: make sure you also have:
+
   ```bash
     - fast:
       enabled: yes
@@ -578,12 +582,15 @@ Also add a custom-rules file for **Clickfix Detections**
 
 1.Add clickfix-custom File:
 In Directory: 
+
 ```bash
 C:\Program Files\Suricata\rules
 ```
+
  **Open Notepad as an Admin** .
  
 2.Add the Following Rules:
+
 ```bash
  # Detect .ps1 script download via HTTP URI
 alert http any any -> any any (msg:"[ClickFix] PowerShell Script Download Attempt (.ps1)"; flow:to_server, established; content:".ps1"; http_uri; nocase; classtype:trojan-activity; sid:110001; rev:2;)
@@ -666,6 +673,7 @@ alert http 10.0.2.16 any -> any any (msg:"[ClickFix] HTTP Traffic from Agent 10.
 rule-files:
   - clickfix-custom.rules
   ```
+
 ![Custom rules for CLICKFIX detection](https://github.com/user-attachments/assets/c6cbbfdc-c8f7-4d29-9ba8-9e6afe84127b)
 
 4. **Restart Suricata**
@@ -677,6 +685,7 @@ rule-files:
     ```
 
 5.**Or run Suricata manually for testing:**
+
   ```bash
   "C:\Program Files\Suricata\suricata.exe" -c "C:\Program Files\Suricata\suricata.yaml" -i 1
   ```
@@ -685,27 +694,34 @@ rule-files:
 **Now that Windows running Suricata with my custom clickfix.rules  the next step is to forward the logs (especially eve.json) from Windows to  Ubuntu SIEM (e.g., Wazuh or ELK). **
 
 ---
+
 ## Install Filebeat on Windows (Forwarder)
 
 ### Step 1:
+
 1. Download Filebeat for Windows (ZIP) from: https://www.elastic.co/downloads/beats/filebeat
 2. Extract it to:
+
      ```bash
      C:\Program Files\Filebeat
      ```
-3. Open PowerShell as Administrator
-4. Install Filebeat as a service:
+     
+4. Open PowerShell as Administrator
+5. Install Filebeat as a service:
+
      ```bash
      cd "C:\Program Files\Filebeat"
     .\install-service-filebeat.ps1
     ```
 
 ### Step 2:Configure Filebeat to Watch Suricata Logs
+
 1. Edit the config file:
    
    ```bash
      C:\Program Files\Filebeat\filebeat.yml
     ```
+   
 2. Replace the default config with this setup:
 
   ```bash
@@ -738,6 +754,7 @@ Or:
 ```bash
 .\filebeat.exe -e -c filebeat.yml
 ```
+
 ---
 
 ## Logstash Installation and Configuration on Ubuntu (For Suricata + Filebeat)
@@ -748,6 +765,7 @@ Or:
   sudo apt update
   sudo apt install openjdk-11-jdk -y
   ```
+
 Verify installation:
 
 ```bash
@@ -767,6 +785,7 @@ java -version
     ```bash
     sudo apt install logstash -y
      ```
+    
 ### Step 3: Create a Logstash Config File for Suricata Logs
 
 Create a new config file:
@@ -798,6 +817,7 @@ output {
     password => "123456"
   }
 }
+
  ```
 Save and exit (Ctrl+O, Enter, then Ctrl+X).
 
@@ -843,7 +863,9 @@ This lab simulates a highly realistic phishing attack leveraging social engineer
   - Phishing setup using Apache on Kali
   - RAT delivery through Windows Run
   - Live process and traffic monitoring with open tools
-  - Memory dumping and YARA rule detection
+  - Memory dumping and YARA rule detection    
+  - **Wazuh + Sysmon** for endpoint detection and behavioral analytics.
+  - **Forward Suricata logs** from Windows to a Logstash-enabled SIEM using Filebeat, enabling real-time alerting and dashboard integration.
 
 It reflects a real-world adversary TTP (Tactic, Technique, Procedure) and showcases layered defensive capabilities.
 
