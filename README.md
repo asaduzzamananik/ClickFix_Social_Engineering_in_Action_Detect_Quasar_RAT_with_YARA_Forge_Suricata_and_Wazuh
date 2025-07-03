@@ -664,7 +664,6 @@ rule-files:
   ```
 ![Custom rules for CLICKFIX detection](https://github.com/user-attachments/assets/c6cbbfdc-c8f7-4d29-9ba8-9e6afe84127b)
 
-
 4. **Restart Suricata**
    Open CMD or PowerShell as Administrator:
 
@@ -672,15 +671,147 @@ rule-files:
    net stop suricata
    net start suricata
     ```
-   
+
 5.**Or run Suricata manually for testing:**
   ```bash
   "C:\Program Files\Suricata\suricata.exe" -c "C:\Program Files\Suricata\suricata.yaml" -i 1
   ```
 
-Now that Windows running Suricata with my custom clickfix.rules  the next step is to forward the logs (especially eve.json) from Windows to  Ubuntu SIEM (e.g., Wazuh or ELK). 
+**Now that Windows running Suricata with my custom clickfix.rules  the next step is to forward the logs (especially eve.json) from Windows to  Ubuntu SIEM (e.g., Wazuh or ELK). **
 
-STEP 1: Install Filebeat on Windows (Forwarder)
+## Install Filebeat on Windows (Forwarder)
+
+### Step 1:
+1. Download Filebeat for Windows (ZIP) from: https://www.elastic.co/downloads/beats/filebeat
+2. Extract it to:
+     ```bash
+     C:\Program Files\Filebeat
+     ```
+3. Open PowerShell as Administrator
+4. Install Filebeat as a service:
+     ```bash
+     cd "C:\Program Files\Filebeat"
+    .\install-service-filebeat.ps1
+    ```
+
+### Step 2:Configure Filebeat to Watch Suricata Logs
+1. Edit the config file:
+   
+   ```bash
+     C:\Program Files\Filebeat\filebeat.yml
+    ```
+2. Replace the default config with this setup:
+
+  ```bash
+   filebeat.inputs:
+  - type: filestream
+    id: suricata-logs
+    enabled: true
+    paths:
+      - 'C:\Program Files\Suricata\log\eve.json'
+    parsers:
+      - ndjson:
+          keys_under_root: true
+          add_error_key: true
+
+output.logstash:
+  hosts: ["<YOUR_UBUNTU_IP>:5044"] // SIEM MANAGER'S IP (UBUNTU) 
+   ```
+**Replace <YOUR_UBUNTU_IP> with the IP of your Ubuntu SIEM machine.**
+
+![FILEBEAT_yaml](https://github.com/user-attachments/assets/8dc09fc7-6558-41e9-870a-a6143ca7e9bd)
+
+**Restart Filebeat on Windows**
+Run In powershell:
+```bash
+Stop-Service filebeat
+Start-Service filebeat
+```
+Or:
+
+```bash
+.\filebeat.exe -e -c filebeat.yml
+```
+
+## Logstash Installation and Configuration on Ubuntu (For Suricata + Filebeat)
+### Step 1: Install Java (required for Logstash)
+  Logstash requires Java 11:
+  
+  ```bash
+  sudo apt update
+  sudo apt install openjdk-11-jdk -y
+  ```
+Verify installation:
+
+```bash
+java -version
+ ```
+
+### Step 2: Install Logstash
+
+1. Add Elastic APT repo and key:
+   
+   ```bash
+   curl -fsSL https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/elastic.gpg
+   echo "deb https://artifacts.elastic.co/packages/8.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-8.x.list
+   sudo apt update
+   ```
+2. Install Logstash:
+    ```bash
+    sudo apt install logstash -y
+     ```
+### Step 3: Create a Logstash Config File for Suricata Logs
+
+Create a new config file:
+  ```bash
+  sudo nano /etc/logstash/conf.d/suricata-windows.conf
+  ```
+
+Paste the following config:
+ ```bash
+input {
+  beats {
+    port => 5044
+  }
+}
+
+filter {
+  json {
+    source => "message"
+  }
+}
+
+output {
+  elasticsearch {
+    hosts => ["https://10.0.2.15:9200"]
+    ssl => true
+    ssl_certificate_verification => false
+    index => "suricata-%{+YYYY.MM.dd}"
+    user => "elastic"
+    password => "123456"
+  }
+}
+ ```
+Save and exit (Ctrl+O, Enter, then Ctrl+X).
+
+![logstash_conf](https://github.com/user-attachments/assets/14938544-772b-4627-8e97-d00068ecdabb)
+
+### Step 4: Enable and Start Logstash
+
+```bash
+sudo systemctl enable logstash
+sudo systemctl start logstash
+ ```
+
+Check Logstash status:
+```bash
+sudo systemctl status logstash
+ ```
+Check logs if needed:
+
+```bash
+sudo tail -f /var/log/logstash/logstash-plain.log
+```
 
 
 ## Conclusion
