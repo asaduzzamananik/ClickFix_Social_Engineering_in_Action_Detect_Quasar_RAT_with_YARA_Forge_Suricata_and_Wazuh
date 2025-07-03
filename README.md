@@ -813,6 +813,20 @@ Check logs if needed:
 sudo tail -f /var/log/logstash/logstash-plain.log
 ```
 
+### Step 5: Confirm Logstash is Listening
+
+```bash
+sudo netstat -plunt | grep 5044
+```
+
+Now When RAT execute,Then Suricata triggers the alert.
+
+![suri](https://github.com/user-attachments/assets/5a6f47ae-e0e0-4b8a-8197-58e8d95f7d45)
+
+![4ef94988-db14-4cbd-b2b7-577b7517b231](https://github.com/user-attachments/assets/1c608e48-2e07-4460-bef2-526a91a2c44d)
+
+![Trying to connect this ip](https://github.com/user-attachments/assets/43c9e523-aa68-4b68-999e-b9971ea8c5c1)
+
 
 ## Conclusion
 This lab simulates a highly realistic phishing attack leveraging social engineering and .cmd scripting to deliver Quasar RAT. It walks through:
