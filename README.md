@@ -1,4 +1,4 @@
-# ClickFix Social Engineering in Action | Detect Quasar RAT with YARA Forge
+# ClickFix Social Engineering in Action | Detect Quasar RAT with YARA Forge, Suricata and Wazuh
 This project replicates a real-world malware delivery technique known as ClickFix, where a fake Cloudflare CAPTCHA page tricks users into running a malicious command via Windows Run (Win + R). The payload is a .cmd loader that downloads and executes a Quasar RAT.
 
 ---
