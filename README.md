@@ -482,7 +482,7 @@ Restart-Service -Name wazuh
 
 ---
 
-## Phase 7: Suricata Alert Genaration 
+## Phase 7: Suricata Alert Genaration And forward log from Windows to Ubuntu SIEM
 
 ### Step 1: Install Suricata on Windows
 
@@ -506,17 +506,181 @@ Restart-Service -Name wazuh
     
   2.Right-click suricata.yaml → Open with Notepad++ or Visual Studio Code (recommended for YAML indentation).
 
-  3.Enable eve.json Logging
+  3.Enable **eve.json** Logging
   Search for:
   
-     ```bash
-    - eve-log:
+```bash
+- eve-log:
+```
+
+Make sure it looks like this:
+
+```bash
+outputs:
+  - eve-log:
+      enabled: yes
+      filetype: regular
+      filename: eve.json
+      types:
+        - alert
+        - dns
+        - http
+        - tls
+        - flow
+```
+**You can also add fileinfo, smtp, ssh, etc. if needed.**
+
+4.Enable **fast.log** Logging
+Below outputs: make sure you also have:
+  ```bash
+    - fast:
+      enabled: yes
+      filename: fast.log
+      append: yes
+  ```
+
+![suri yaml](https://github.com/user-attachments/assets/b2b123e8-ecb4-46de-a0fc-80b2b23e8bd4)
+
+5. Save the File
+  - Save suricata.yaml
+  - Make sure indentation is correct (YAML is indentation-sensitive)
+
+## Test the Config
+Dry-run Test (Check for YAML Errors)
+
+```bash
+cd "C:\Program Files\Suricata"
+suricata.exe -T -c .\etc\suricata.yaml -v
+```
+If it passes, proceed to run it live.
+
+Now **Start Suricata**
+Start Windows Powershel As Admin:
+Then:
+
+```bash
+suricata.exe -c .\etc\suricata.yaml -i <interface-id>
+```
+
+Now Add rules for Suricata:
+1. Download Full Rule Set
+
+In Powershell:
+```bash
+Invoke-WebRequest -Uri https://rules.emergingthreats.net/open/suricata-7.0/emerging.rules.tar.gz -OutFile C:\rules.tar.gz
+tar -xvzf C:\rules.tar.gz -C "C:\Program Files\Suricata\rules"
+```
+Also add a custom-rules file for **Clickfix Detections**
+
+1.Add clickfix-custom File:
+In Directory: 
+```bash
+C:\Program Files\Suricata\rules
+```
+ **Open Notepad as an Admin** .
+ 
+2.Add the Following Rules:
+```bash
+ # Detect .ps1 script download via HTTP URI
+alert http any any -> any any (msg:"[ClickFix] PowerShell Script Download Attempt (.ps1)"; flow:to_server, established; content:".ps1"; http_uri; nocase; classtype:trojan-activity; sid:110001; rev:2;)
+
+# Detect suspicious PowerShell User-Agent
+alert http any any -> any any (msg:"[ClickFix] Suspicious PowerShell User-Agent Detected"; flow:to_server, established; content:"PowerShell"; http_header; nocase; classtype:bad-unknown; sid:110002; rev:1;)
+
+# Detect suspicious cmd.exe in HTTP URI
+alert http any any -> any any (msg:"[ClickFix] Suspicious cmd.exe Execution via HTTP URI"; flow:to_server, established; content:"cmd.exe"; http_uri; nocase; classtype:shellcode-detect; sid:110003; rev:2;)
+
+# Detect IEX command in HTTP body
+alert http any any -> any any (msg:"[ClickFix] PowerShell IEX Command in HTTP Body"; flow:to_server, established; content:"IEX"; http_client_body; nocase; classtype:shellcode-detect; sid:110004; rev:1;)
+
+# Detect .cmd file download via URI
+alert http any any -> any any (msg:"[ClickFix] Suspicious .cmd File Download Attempt"; flow:to_server, established; content:".cmd"; http_uri; nocase; classtype:trojan-activity; sid:110005; rev:2;)
+
+# Detect fake Cloudflare CAPTCHA in HTML response
+alert http any any -> any any (msg:"[ClickFix] Fake Cloudflare CAPTCHA Detected"; flow:to_client, established; content:"cf-challenge"; content:"captcha"; nocase; classtype:trojan-activity; sid:110006; rev:2;)
+
+# Detect curl User-Agent
+alert http any any -> any any (msg:"[ClickFix] Suspicious User-Agent (curl)"; flow:to_server, established; content:"User-Agent|3A| curl"; http_header; nocase; classtype:bad-unknown; sid:110007; rev:1;)
+
+# Detect base64 string in HTTP body (via content + pcre)
+alert http any any -> any any (msg:"[ClickFix] Possible Base64 Payload in HTTP Body"; flow:to_server, established; content:"="; http_client_body; pcre:"/([A-Za-z0-9+\/]{100,}=*)/"; classtype:shellcode-detect; sid:110008; rev:2;)
+
+# Detect PowerShell EncodedCommand in URI
+alert http any any -> any any (msg:"[ClickFix] PowerShell EncodedCommand Detected"; flow:to_server, established; content:"-encodedCommand"; http_uri; nocase; classtype:shellcode-detect; sid:110009; rev:2;)
+
+alert http any any -> any any (msg:"[ClickFix] Quasar RAT Default User-Agent"; flow:to_server, established; pcre:"/User-Agent\x3a Mozilla\/4\.0 \(compatible\; MSIE 6\.0\; Windows NT 5\.1\; SV1\)/iH"; classtype:trojan-activity; sid:110010; rev:3;)
+
+
+# Detect typical Quasar C2 HTTP URI (e.g., /upload, /connect)
+alert http any any -> any any (msg:"[ClickFix] Quasar RAT C2 URI - /connect"; flow:to_server, established; content:"/connect"; http_uri; nocase; classtype:trojan-activity; sid:110011; rev:1;)
+
+alert http any any -> any any (msg:"[ClickFix] Quasar RAT C2 URI - /upload"; flow:to_server, established; content:"/upload"; http_uri; nocase; classtype:trojan-activity; sid:110012; rev:1;)
+
+# Detect Quasar-specific headers (if any seen in PCAPs)
+alert http any any -> any any (msg:"[ClickFix] Quasar RAT Custom Header (X-Session-ID)"; flow:to_server, established; content:"X-Session-ID"; http_header; nocase; classtype:trojan-activity; sid:110013; rev:1;)
+
+# Detect use of binary application/octet-stream POST (typical Quasar file upload)
+alert http any any -> any any (msg:"[ClickFix] Suspicious Binary File Upload via HTTP"; flow:to_server, established; content:"application/octet-stream"; http_header; nocase; classtype:shellcode-detect; sid:110014; rev:1;)
+
+# Detect base64 command pattern in Windows PowerShell (e.g., a long string of A-Z0-9+/ with =)
+alert http any any -> any any (msg:"[ClickFix] Potential Obfuscated Command in URI"; flow:to_server, established; content:"="; http_uri; pcre:"/([A-Za-z0-9+\/]{80,}=*)/"; classtype:bad-unknown; sid:110015; rev:1;)
+
+
+#Basic TCP Connection Rule for Specific IP and Port
+alert tcp any any -> 193.124.205.56 350 (msg:"[ClickFix] Quasar RAT C2 Detected - Known IP"; sid:110020; rev:1; classtype:trojan-activity;)
+
+#Bi-Directional Rule (if you want to catch return traffic too)
+alert tcp 193.124.205.56 350 <> any any (msg:"[ClickFix] Quasar RAT C2 Bi-Directional Comm Detected"; sid:110021; rev:1; classtype:trojan-activity;)
+
+# Rule for Any Connection to That IP (any port)
+alert ip any any -> 193.124.205.56 any (msg:"[ClickFix] Suspicious Connection to Known Malicious IP"; sid:110022; rev:1; classtype:trojan-activity;)
+
+# Any TCP Connection From the Agent
+alert tcp 10.0.2.16 any -> any any (msg:"[ClickFix] Outbound TCP Traffic from Agent 10.0.2.16"; sid:110030; rev:1; classtype:network-activity;)
+
+#2. Any TCP Connection To the Agent
+alert tcp any any -> 10.0.2.16 any (msg:"[ClickFix] Inbound TCP Traffic to Agent 10.0.2.16"; sid:110031; rev:1; classtype:network-activity;)
+
+#3. Any IP Traffic To/From the Agent
+alert ip any any -> 10.0.2.16 any (msg:"[ClickFix] Inbound IP Traffic to Agent"; sid:110032; rev:1; classtype:network-activity;)
+alert ip 10.0.2.16 any -> any any (msg:"[ClickFix] Outbound IP Traffic from Agent"; sid:110033; rev:1; classtype:network-activity;)
+
+#4. Only Detect When Agent Connects to C2 IP (193.124.205.56)
+alert tcp 10.0.2.16 any -> 193.124.205.56 350 (msg:"[ClickFix] Agent Connecting to Known C2 Server"; sid:110034; rev:1; classtype:trojan-activity;)
+
+#5. Detect HTTP Traffic from Agent (e.g., for Quasar or Powershell)
+alert http 10.0.2.16 any -> any any (msg:"[ClickFix] HTTP Traffic from Agent 10.0.2.16"; sid:110035; rev:1; classtype:web-activity;)
+
+```
+3.Save the File
+
+4.Then edit your Suricata config (suricata.yaml) and make sure it loads that rule file:
+  **Search for default-rule-path and confirm the .rules file is listed:**
+  
+  ```bash
+  default-rule-path: C:\Program Files\Suricata\rules
+rule-files:
+  - clickfix-custom.rules
+  ```
+![Custom rules for CLICKFIX detection](https://github.com/user-attachments/assets/c6cbbfdc-c8f7-4d29-9ba8-9e6afe84127b)
+
+
+4. **Restart Suricata**
+   Open CMD or PowerShell as Administrator:
+
+   ```bash
+   net stop suricata
+   net start suricata
     ```
+   
+5.**Or run Suricata manually for testing:**
+  ```bash
+  "C:\Program Files\Suricata\suricata.exe" -c "C:\Program Files\Suricata\suricata.yaml" -i 1
+  ```
 
+Now that Windows running Suricata with my custom clickfix.rules  the next step is to forward the logs (especially eve.json) from Windows to  Ubuntu SIEM (e.g., Wazuh or ELK). 
 
-
-
-
+STEP 1: Install Filebeat on Windows (Forwarder)
 
 
 ## Conclusion
