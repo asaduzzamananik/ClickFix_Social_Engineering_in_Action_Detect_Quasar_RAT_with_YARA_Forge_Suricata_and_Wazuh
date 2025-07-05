@@ -419,7 +419,7 @@ cd C:\Sysmon
 Edit /var/ossec/etc/shared/default:
 
 ```bash
- nano /var/ossec/etc/shared/default
+ nano /var/ossec/etc/shared/default/agent.conf
 ```
 2.Add the Following Configaration:
 
