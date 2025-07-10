@@ -5,7 +5,9 @@ This project replicates a real-world malware delivery technique known as ClickFi
 
 ## Credits & Original POC Reference
 
-This project was inspired by a proof-of-concept video by **Ayush Ahmed**:
+This project was inspired by a proof-of-concept video by **Ayush Anand** :
+[Securityinbits](https://github.com/Securityinbits)
+
 
 🎥 **Video Title:**  
 [ClickFix Social Engineering in Action - Quasar RAT Detection with YARA Forge](https://www.youtube.com/watch?v=yll8-yqVv0w)
