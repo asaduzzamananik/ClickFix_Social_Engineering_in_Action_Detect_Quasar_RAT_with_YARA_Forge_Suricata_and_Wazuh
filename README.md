@@ -559,8 +559,7 @@ Below outputs: make sure you also have:
 Dry-run Test (Check for YAML Errors)
 
 ```bash
-cd "C:\Program Files\Suricata"
-suricata.exe -T -c .\etc\suricata.yaml -v
+.\suricata.exe -T -c "C:\Program Files\Suricata\suricata.yaml" -v
 ```
 If it passes, proceed to run it live.
 
