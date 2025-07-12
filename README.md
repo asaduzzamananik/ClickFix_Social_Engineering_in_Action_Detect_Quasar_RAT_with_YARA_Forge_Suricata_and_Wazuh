@@ -488,7 +488,7 @@ Restart-Service -Name wazuh
 
 ---
 
-## Phase 7: Suricata Alert Genaration And forward log from Windows to Ubuntu SIEM
+## Phase 8: Suricata Alert Genaration And forward log from Windows to Ubuntu SIEM
 
 ### Step 1: Install Suricata on Windows
 
